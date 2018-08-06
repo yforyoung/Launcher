@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fitsSystemWindows="true"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    tools:context=".activity.AppsActivity">
+
+    <LinearLayout
+        android:id="@+id/apps_title"
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:padding="20dp"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:background="@drawable/ic_apps"
+            android:layout_width="42dp"
+            android:layout_height="42dp" />
+        <TextView
+            android:text="我的应用"
+            android:textColor="#fff"
+            android:textStyle="bold"
+            android:textSize="42sp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:background="#fff"
+        android:layout_below="@id/apps_title"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/apps_list"
+        android:layout_margin="20dp"
+        android:layout_below="@id/apps_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>
