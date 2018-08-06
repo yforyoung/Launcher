@@ -11,7 +11,7 @@ public class ToastUtil {
     @SuppressLint("ShowToast")
     public static void showToast(String text){
         if (toast==null){
-            Toast.makeText(App.getInstance().getContext(), text, Toast.LENGTH_SHORT);
+            toast=Toast.makeText(App.getInstance().getContext(), text, Toast.LENGTH_SHORT);
         }else{
             toast.setText(text);
         }

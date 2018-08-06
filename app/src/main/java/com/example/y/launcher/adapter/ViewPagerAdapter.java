@@ -1,11 +1,9 @@
 package com.example.y.launcher.adapter;
 
-
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
 import com.example.y.launcher.fragment.FirstFragment;
 import com.example.y.launcher.fragment.SecondFragment;
 

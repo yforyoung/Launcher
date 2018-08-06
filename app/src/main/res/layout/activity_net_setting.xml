@@ -16,12 +16,13 @@
         android:layout_margin="20dp"
         android:textColor="#fff"
         android:textSize="32sp" />
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/wifi_list"
         android:layout_margin="20dp"
+        android:background="#90ffffff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </ListView>
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/wifi_icon"
+        android:layout_margin="10dp"
+        android:layout_gravity="center"
+        android:background="@drawable/ic_wifi_1_bar"
+        android:layout_width="52dp"
+        android:layout_height="52dp" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="52dp">
+        <TextView
+            android:id="@+id/wifi_name"
+            android:text="Ayf"
+            android:textColor="#000"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+        <TextView
+            android:id="@+id/wifi_state"
+            android:text="未连接"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+    </LinearLayout>
+
+</LinearLayout>
