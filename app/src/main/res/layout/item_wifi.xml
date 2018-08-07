@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/wifi_icon"
-        android:layout_margin="10dp"
-        android:layout_gravity="center"
-        android:background="@drawable/ic_wifi_1_bar"
-        android:layout_width="52dp"
-        android:layout_height="52dp" />
     <LinearLayout
         android:orientation="vertical"
         android:layout_gravity="center"
+        android:layout_centerVertical="true"
         android:layout_width="match_parent"
         android:layout_height="52dp">
         <TextView
@@ -34,5 +27,12 @@
             android:layout_width="match_parent"
             android:layout_height="0dp" />
     </LinearLayout>
-
-</LinearLayout>
+    <ImageView
+        android:id="@+id/wifi_icon"
+        android:layout_margin="10dp"
+        android:layout_gravity="center"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/ic_wifi_1_bar"
+        android:layout_width="52dp"
+        android:layout_height="52dp" />
+</RelativeLayout>

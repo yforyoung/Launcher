@@ -1,7 +1,5 @@
 package com.example.y.launcher.adapter;
 
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,13 +8,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.y.launcher.R;
+import com.example.y.launcher.beans.Wifi;
+
 import java.util.List;
 
 public class WifiAdapter extends RecyclerView.Adapter<WifiAdapter.ViewHolder> {
-    private List<ScanResult> wifiList;
+    private List<Wifi> wifiList;
     private OnItemClickListener onItemClickListener;
 
-    public WifiAdapter(List<ScanResult> wifiList) {
+    public WifiAdapter(List<Wifi> wifiList) {
         this.wifiList = wifiList;
     }
 
@@ -38,15 +38,15 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ScanResult sr = wifiList.get(position);
-        holder.wifiName.setText(sr.SSID);
-        sr.level= WifiManager.calculateSignalLevel(sr.level,4);
-        setWifiIcon(holder, sr.level, sr.capabilities);
+        Wifi wifi = wifiList.get(position);
+        holder.wifiName.setText(wifi.getSSID());
+        //wifi.getLevel();= WifiManager.calculateSignalLevel(sr.level,4);
+        setWifiIcon(holder,  wifi.getLevel(), wifi.getCapabilities());
         holder.itemView.setTag(position);
     }
 
     private void setWifiIcon(ViewHolder holder, int level, String capabilities) {
-        if (capabilities.contains("WPA")) {
+        if (capabilities.contains("PSK")||capabilities.contains("WEP")) {
             holder.wifiState.setText("加密");
             switch (level) {
                 case 0:

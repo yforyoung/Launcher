@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
@@ -14,14 +15,18 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.example.y.launcher.R;
 import com.example.y.launcher.adapter.WifiAdapter;
 import com.example.y.launcher.base.BaseActivity;
+import com.example.y.launcher.beans.Wifi;
+import com.example.y.launcher.util.WifiSetUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +34,7 @@ import java.util.List;
 public class NetSettingActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, WifiAdapter.OnItemClickListener {
     private Switch wifiSwitch;
     private WifiManager wifiManager;
-    private List<ScanResult> wifiList;
+    private List<Wifi> wifiList;
     private RecyclerView wifiRecyclerView;
     private WifiAdapter adapter;
     @SuppressLint("HandlerLeak")
@@ -58,14 +63,17 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
                     Log.i("info", "onReceive: 关闭");
                 } else if (state == WifiManager.WIFI_STATE_ENABLED) {
                     Log.i("info", "onReceive: 开启");
-                    wifiManager.startScan();
+                    WifiSetUtil.startScan();
                 }
             } else if (action.equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-                for (ScanResult sr : wifiManager.getScanResults()) {
+                /*for (ScanResult sr : WifiSetUtil.getWifiList()) {
                     if (!sr.SSID.trim().equals("")) {
-                        wifiList.add(sr);
+                        Wifi wifi=new Wifi();
+                        wifi.setSSID(sr.SSID);
+                        wifi.setLevel();
                     }
-                }
+                }*/
+                wifiList.addAll(WifiSetUtil.getWifiList());
                 handler.sendEmptyMessage(0);
             }
         }
@@ -106,8 +114,39 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
 
     @Override
     public void onItemClick(View v, int tag) {
-        ScanResult sr = wifiList.get(tag);
-        Log.i("info", "onItemClick: " + sr.level + "  " + sr.capabilities);
+        final Wifi wifi = wifiList.get(tag);
+        if (wifi.getType() != WifiSetUtil.ESS) {
+            View view = LayoutInflater.from(this).inflate(R.layout.wifi_connect_dialog, null, false);
+            TextView wifiSignal = view.findViewById(R.id.wifi_signal);
+            TextView wifiCapability = view.findViewById(R.id.wifi_capability);
+            final EditText wifiPwd = view.findViewById(R.id.wifi_pwd);
+            switch (wifi.getLevel()) {
+                case 3:
+                    wifiSignal.setText("强");
+                    break;
+                case 2:
+                    wifiSignal.setText("一般");
+                    break;
+                default:
+                    wifiSignal.setText("弱");
+                    break;
+            }
+            wifiCapability.setText(wifi.getCapabilities());
+
+            new AlertDialog.Builder(this)
+                    .setView(view)
+                    .setPositiveButton("连接", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            wifi.setPwd(wifiPwd.getText().toString());
+                            WifiSetUtil.connectWifi(wifi);
+                        }
+                    })
+                    .setNegativeButton("取消", null)
+                    .create()
+                    .show();
+        } else
+            WifiSetUtil.connectWifi(wifi);
     }
 
     private void registerBrodCastReceiver() {
