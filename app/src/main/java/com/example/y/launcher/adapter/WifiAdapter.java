@@ -42,6 +42,11 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiAdapter.ViewHolder> {
         holder.wifiName.setText(wifi.getSSID());
         //wifi.getLevel();= WifiManager.calculateSignalLevel(sr.level,4);
         setWifiIcon(holder,  wifi.getLevel(), wifi.getCapabilities());
+        if (wifi.isConnect()){
+            holder.wifiState.setText("已连接");
+        }
+        else if (wifi.isSave()&&!wifi.isConnect())
+            holder.wifiState.setText("已保存");
         holder.itemView.setTag(position);
     }
 
