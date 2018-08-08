@@ -21,7 +21,7 @@ import java.util.Map;
  * */
 public class WifiSetUtil {
     private static WifiManager manager;
-    private static List<WifiConfiguration> existingConfigs;
+    private static WifiInfo wifiInfo;
     public static final int ESS = 0;
     private static final int PSK = 1;
     private static final int WEP = 2;
@@ -42,38 +42,37 @@ public class WifiSetUtil {
     public static List<Wifi> getWifiList() {
         List<Wifi> wifiList = new ArrayList<>();
         Map<String, String> temp = new HashMap<>();
-        WifiInfo wifiInfo = WifiSetUtil.getConnectWifiInfo();
-        existingConfigs = manager.getConfiguredNetworks();
-        String s = "";
-        if (wifiInfo != null)
-            s = wifiInfo.getSSID();
         for (ScanResult sr : manager.getScanResults()) {
             if (!sr.SSID.equals("") && !temp.containsKey(sr.SSID)) {
-                Wifi wifi = new Wifi();
-                wifi.setSSID(sr.SSID);
-                wifi.setLevel(WifiManager.calculateSignalLevel(sr.level, 4));
-                if (s.equals("\"" + sr.SSID + "\""))
-                    wifi.setConnect(true);
-                else
-                    wifi.setConnect(false);
-                if (isExist(sr.SSID))
-                    wifi.setSave(true);
-                else
-                    wifi.setSave(false);
-                wifi.setPwd("");
-                String c = sr.capabilities;
-                wifi.setCapabilities(c.substring(0, c.indexOf("[ESS]")));
-                if (c.contains("PSK"))
-                    wifi.setType(PSK);
-                else if (c.contains("WEP"))
-                    wifi.setType(WEP);
-                else
-                    wifi.setType(ESS);
-                wifiList.add(wifi);
+                wifiList.add(initWifi(sr));
                 temp.put(sr.SSID, sr.SSID);
             }
         }
         return wifiList;
+    }
+
+    private static Wifi initWifi(ScanResult sr) {
+        Wifi wifi = new Wifi();
+        wifi.setSSID(sr.SSID);
+        wifi.setLevel(WifiManager.calculateSignalLevel(sr.level, 4));
+        if (SpfUtil.getString("connect_wifi","").equals(sr.SSID))
+            wifi.setConnect(true);
+        else
+            wifi.setConnect(false);
+        if (isExist(sr.SSID))
+            wifi.setSave(true);
+        else
+            wifi.setSave(false);
+        wifi.setPwd("");
+        String c = sr.capabilities;
+        wifi.setCapabilities(c.substring(0, c.indexOf("[ESS]")));
+        if (c.contains("PSK"))
+            wifi.setType(PSK);
+        else if (c.contains("WEP"))
+            wifi.setType(WEP);
+        else
+            wifi.setType(ESS);
+        return wifi;
     }
 
     public static void connectWifi(Wifi wifi) {
@@ -81,27 +80,24 @@ public class WifiSetUtil {
         if (!manager.enableNetwork(netId, true))
             manager.reconnect();
         else {
+            SpfUtil.putString("connect_wifi",wifi.getSSID());
             wifi.setConnect(true);
             wifi.setSave(true);
         }
     }
 
-    public static void cutWifiConnection(Wifi wifi){
+    public static void cutWifiConnection(Wifi wifi) {
+        //manager.disableNetwork(getConnectWifiInfo().getNetworkId());
         manager.disconnect();
         wifi.setConnect(false);
     }
 
-    public static void connectWifiSaved(Wifi wifi){
-        WifiConfiguration config=savedWifi(wifi.getSSID());
-        if (config!=null){
-            int netId=manager.addNetwork(config);
-            manager.enableNetwork(netId,true);
-            wifi.setConnect(true);
-            wifi.setSave(true);
-        }
+    public static void connectWifiSaved(Wifi wifi) {
+        wifi.setPwd(SpfUtil.getString(wifi.getSSID(), ""));
+        connectWifi(wifi);
     }
 
-    private static WifiInfo getConnectWifiInfo() {
+    public static WifiInfo getConnectWifiInfo() {
         return manager.getConnectionInfo();
     }
 
@@ -151,6 +147,7 @@ public class WifiSetUtil {
 
     /*存在显示已保存*/
     private static boolean isExist(String SSID) {
+        List<WifiConfiguration> existingConfigs = manager.getConfiguredNetworks();
         for (WifiConfiguration existingConfig : existingConfigs) {
             if (existingConfig.SSID.equals("\"" + SSID + "\"")) {
                 return true;
@@ -160,7 +157,9 @@ public class WifiSetUtil {
     }
 
 
-    private static WifiConfiguration savedWifi(String SSID){
+
+    private static WifiConfiguration getSavedWifi(String SSID) {
+        List<WifiConfiguration> existingConfigs = manager.getConfiguredNetworks();
         for (WifiConfiguration existingConfig : existingConfigs) {
             if (existingConfig.SSID.equals("\"" + SSID + "\"")) {
                 return existingConfig;

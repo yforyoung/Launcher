@@ -24,8 +24,11 @@ import com.example.y.launcher.R;
 import com.example.y.launcher.adapter.WifiAdapter;
 import com.example.y.launcher.base.BaseActivity;
 import com.example.y.launcher.beans.Wifi;
+import com.example.y.launcher.util.SpfUtil;
+import com.example.y.launcher.util.WifiComparator;
 import com.example.y.launcher.util.WifiSetUtil;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class NetSettingActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, WifiAdapter.OnItemClickListener {
@@ -40,7 +43,7 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:
-                    //Collections.sort(wifiList, new WifiComparator());
+                    Collections.sort(wifiList, new WifiComparator());
                     adapter.notifyDataSetChanged();
                     break;
                 case 1:
@@ -128,11 +131,11 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
                 case 3:
                     wifiSignal.setText("强");
                     break;
-                case 2:
-                    wifiSignal.setText("一般");
+                case 0:
+                    wifiSignal.setText("弱");
                     break;
                 default:
-                    wifiSignal.setText("弱");
+                    wifiSignal.setText("一般");
                     break;
             }
             wifiCapability.setText(wifi.getCapabilities());
@@ -143,11 +146,13 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             wifi.setPwd(wifiPwd.getText().toString());
+                            SpfUtil.putString(wifi.getSSID(),wifi.getPwd());
                         }
                     })
                     .setNegativeButton("取消", null)
                     .create()
                     .show();
+
         }
         WifiSetUtil.connectWifi(wifi);
     }
@@ -185,4 +190,9 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
         registerReceiver(wifiReceiver, filter);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(wifiReceiver);
+    }
 }
