@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
@@ -22,16 +20,12 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
-
 import com.example.y.launcher.R;
 import com.example.y.launcher.adapter.WifiAdapter;
 import com.example.y.launcher.base.BaseActivity;
 import com.example.y.launcher.beans.Wifi;
-import com.example.y.launcher.util.WifiComparator;
 import com.example.y.launcher.util.WifiSetUtil;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class NetSettingActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, WifiAdapter.OnItemClickListener {
@@ -46,7 +40,7 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:
-                    Collections.sort(wifiList, new WifiComparator());
+                    //Collections.sort(wifiList, new WifiComparator());
                     adapter.notifyDataSetChanged();
                     break;
                 case 1:
@@ -126,7 +120,7 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
 
     private void showConnectWifiDialog(final Wifi wifi) {
         if (wifi.getType() != WifiSetUtil.ESS) {
-            View view = LayoutInflater.from(this).inflate(R.layout.wifi_connect_dialog, null, false);
+            @SuppressLint("InflateParams") View view = LayoutInflater.from(this).inflate(R.layout.wifi_connect_dialog, null, false);
             TextView wifiSignal = view.findViewById(R.id.wifi_signal);
             TextView wifiCapability = view.findViewById(R.id.wifi_capability);
             final EditText wifiPwd = view.findViewById(R.id.wifi_pwd);
