@@ -2,25 +2,18 @@ package com.example.y.launcher.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
-
 import com.example.y.launcher.R;
 import com.example.y.launcher.adapter.WifiAdapter;
 import com.example.y.launcher.base.BaseActivity;
@@ -28,7 +21,6 @@ import com.example.y.launcher.beans.Wifi;
 import com.example.y.launcher.util.SpfUtil;
 import com.example.y.launcher.util.WifiComparator;
 import com.example.y.launcher.util.WifiUtil;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +30,7 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
     private List<Wifi> wifiList;
     private RecyclerView wifiRecyclerView;
     private WifiAdapter adapter;
+
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -49,12 +42,14 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
                     adapter.notifyDataSetChanged();
                     break;
                 case 1:
+                    refreshWifi();
+                    sendEmptyMessageDelayed(1,1000*20);
                     break;
             }
         }
     };
 
-    private BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
+/*    private BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -71,9 +66,11 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
                 wifiList.clear();
                 wifiList.addAll(WifiUtil.getWifiList());
                 handler.sendEmptyMessage(0);
+            }else if (action.equals(REFRESH_WIFI_LIST)){
+                WifiUtil.startScan();
             }
         }
-    };
+    };*/
 
     @Override
     public void initView() {
@@ -85,15 +82,25 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
     @Override
     public void initData() {
         wifiSwitch.setChecked(WifiUtil.isWifiEnabled());
-        registerBrodCastReceiver();
+       // registerBrodCastReceiver();
         wifiList = new ArrayList<>();
         adapter = new WifiAdapter(wifiList);
         wifiRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         wifiRecyclerView.setAdapter(adapter);
         wifiRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        //sendRefreshWifiAction();
 
-
+        refreshWifi();
+        handler.sendEmptyMessageDelayed(1,1000*10);
     }
+
+    private void refreshWifi(){
+        WifiUtil.startScan();
+        wifiList.clear();
+        wifiList.addAll(WifiUtil.getWifiList());
+        handler.sendEmptyMessage(0);
+    }
+
 
     @Override
     public void initListener() {
@@ -196,16 +203,23 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
                 .show();
     }
 
-    private void registerBrodCastReceiver() {
+  /*  private void registerBrodCastReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         registerReceiver(wifiReceiver, filter);
     }
 
+    private void sendRefreshWifiAction(){
+        intent=new Intent();
+        intent.setAction(REFRESH_WIFI_LIST);
+        sendBroadcast(intent);
+        handler.sendEmptyMessageDelayed(1,1000*20);
+    }*/
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(wifiReceiver);
+       // unregisterReceiver(wifiReceiver);
     }
 }

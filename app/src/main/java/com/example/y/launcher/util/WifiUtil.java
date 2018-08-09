@@ -6,11 +6,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-
 import com.example.y.launcher.beans.Wifi;
-
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,9 +26,7 @@ public class WifiUtil {
     }
 
     private static WifiInfo getConnectWifiInfo() {
-        if (info==null)
-            info=manager.getConnectionInfo();
-        return info;
+        return manager.getConnectionInfo();
     }
 
     public static void setWifiEnabled(boolean b) {
@@ -91,10 +85,9 @@ public class WifiUtil {
     }
 
     public static void cutWifiConnection(Wifi wifi) {
-        //manager.disableNetwork(getConnectWifiInfo().getNetworkId());
         manager.disconnect();
         wifi.setConnect(false);
-        SpfUtil.putString("connect_wifi","");
+        SpfUtil.putString("connect_wifi", "");
     }
 
     public static void connectWifiSaved(Wifi wifi) {
@@ -177,40 +170,26 @@ public class WifiUtil {
         return getConnectWifiInfo().getBSSID();
     }
 
-    public static String getMacAddress() {
-        byte[] add = new byte[0];
-        try {
-            NetworkInterface nif = NetworkInterface.getByName("wlan0");
-            add = nif.getHardwareAddress();
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        if (add == null)
-            return "";
-        else {
-            StringBuilder buf = new StringBuilder();
-            for (byte b : add) {
-                buf.append(String.format("%02X:", b));
-            }
-            if (buf.length() > 0) {
-                buf.deleteCharAt(buf.length() - 1);
-            }
-            return buf.toString();
-        }
+    public static String getGateWay() {
+        return intToIp(manager.getDhcpInfo().gateway);
+    }
+
+    public static String getNetMask(){
+        return intToIp(manager.getDhcpInfo().netmask);
     }
 
     public static String getIP() {
         WifiInfo info = getConnectWifiInfo();
+        if (info == null)
+            return "";
         return intToIp(info.getIpAddress());
     }
 
     private static String intToIp(int ipInt) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(ipInt & 0xFF).append(".");
-        sb.append((ipInt >> 8) & 0xFF).append(".");
-        sb.append((ipInt >> 16) & 0xFF).append(".");
-        sb.append((ipInt >> 24) & 0xFF);
-        return sb.toString();
+        return String.valueOf(ipInt & 0xFF) + "." +
+                ((ipInt >> 8) & 0xFF) + "." +
+                ((ipInt >> 16) & 0xFF) + "." +
+                ((ipInt >> 24) & 0xFF);
     }
 }
 
