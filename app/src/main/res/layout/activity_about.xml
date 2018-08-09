@@ -45,6 +45,46 @@
             android:text="MAC:   无"
             android:textSize="20sp"
             android:textStyle="bold" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000" />
+
+        <TextView
+            android:id="@+id/wlan_mac"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="WLAN MAC:   无"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000" />
+
+        <TextView
+            android:id="@+id/soft_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="软件版本:   无"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000" />
+
+        <TextView
+            android:id="@+id/hard_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="硬件版本:   无"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
 
     </LinearLayout>
 </LinearLayout>

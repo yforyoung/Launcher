@@ -26,7 +26,7 @@ import com.example.y.launcher.base.BaseActivity;
 import com.example.y.launcher.beans.Wifi;
 import com.example.y.launcher.util.SpfUtil;
 import com.example.y.launcher.util.WifiComparator;
-import com.example.y.launcher.util.WifiSetUtil;
+import com.example.y.launcher.util.WifiUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,11 +63,11 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
                     Log.i("info", "onReceive: 关闭");
                 } else if (state == WifiManager.WIFI_STATE_ENABLED) {
                     Log.i("info", "onReceive: 开启");
-                    WifiSetUtil.startScan();
+                    WifiUtil.startScan();
                 }
             } else if (action.equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
                 wifiList.clear();
-                wifiList.addAll(WifiSetUtil.getWifiList());
+                wifiList.addAll(WifiUtil.getWifiList());
                 handler.sendEmptyMessage(0);
             }
         }
@@ -82,7 +82,7 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
 
     @Override
     public void initData() {
-        wifiSwitch.setChecked(WifiSetUtil.isWifiEnabled());
+        wifiSwitch.setChecked(WifiUtil.isWifiEnabled());
         registerBrodCastReceiver();
         wifiList = new ArrayList<>();
         adapter = new WifiAdapter(wifiList);
@@ -101,7 +101,7 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        WifiSetUtil.setWifiEnabled(isChecked);
+        WifiUtil.setWifiEnabled(isChecked);
         wifiList.clear();
         if (!isChecked) handler.sendEmptyMessage(0);
     }
@@ -122,7 +122,7 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
     }
 
     private void showConnectWifiDialog(final Wifi wifi) {
-        if (wifi.getType() != WifiSetUtil.ESS) {
+        if (wifi.getType() != WifiUtil.ESS) {
             @SuppressLint("InflateParams") View view = LayoutInflater.from(this).inflate(R.layout.wifi_connect_dialog, null, false);
             TextView wifiSignal = view.findViewById(R.id.wifi_signal);
             TextView wifiCapability = view.findViewById(R.id.wifi_capability);
@@ -154,7 +154,7 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
                     .show();
 
         }
-        WifiSetUtil.connectWifi(wifi);
+        WifiUtil.connectWifi(wifi);
     }
 
     private void showConnectSavedWifiDialog(final Wifi wifi) {
@@ -162,7 +162,7 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
                 .setPositiveButton("连接", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        WifiSetUtil.connectWifiSaved(wifi);
+                        WifiUtil.connectWifiSaved(wifi);
                     }
                 })
                 .setNegativeButton("取消", null)
@@ -175,7 +175,7 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
                 .setPositiveButton("断开", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        WifiSetUtil.cutWifiConnection(wifi);
+                        WifiUtil.cutWifiConnection(wifi);
                     }
                 })
                 .setNegativeButton("取消", null)

@@ -6,7 +6,11 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+
 import com.example.y.launcher.beans.Wifi;
+
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +23,9 @@ import java.util.Map;
  * 查看wifi信息
  * 保存wifi
  * */
-public class WifiSetUtil {
+public class WifiUtil {
     private static WifiManager manager;
-    private static WifiInfo wifiInfo;
+    private static WifiInfo info;
     public static final int ESS = 0;
     private static final int PSK = 1;
     private static final int WEP = 2;
@@ -29,6 +33,12 @@ public class WifiSetUtil {
     @SuppressLint("WifiManagerPotentialLeak")
     public static void init(Context context) {
         manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+    }
+
+    private static WifiInfo getConnectWifiInfo() {
+        if (info==null)
+            info=manager.getConnectionInfo();
+        return info;
     }
 
     public static void setWifiEnabled(boolean b) {
@@ -55,7 +65,7 @@ public class WifiSetUtil {
         Wifi wifi = new Wifi();
         wifi.setSSID(sr.SSID);
         wifi.setLevel(WifiManager.calculateSignalLevel(sr.level, 4));
-        if (SpfUtil.getString("connect_wifi","").equals(sr.SSID))
+        if (SpfUtil.getString("connect_wifi", "").equals(sr.SSID))
             wifi.setConnect(true);
         else
             wifi.setConnect(false);
@@ -80,7 +90,7 @@ public class WifiSetUtil {
         if (!manager.enableNetwork(netId, true))
             manager.reconnect();
         else {
-            SpfUtil.putString("connect_wifi",wifi.getSSID());
+            SpfUtil.putString("connect_wifi", wifi.getSSID());
             wifi.setConnect(true);
             wifi.setSave(true);
         }
@@ -97,9 +107,6 @@ public class WifiSetUtil {
         connectWifi(wifi);
     }
 
-    public static WifiInfo getConnectWifiInfo() {
-        return manager.getConnectionInfo();
-    }
 
     private static WifiConfiguration createWifiConfig(String SSID, String pwd, int type) {
         WifiConfiguration config = new WifiConfiguration();
@@ -157,7 +164,6 @@ public class WifiSetUtil {
     }
 
 
-
     private static WifiConfiguration getSavedWifi(String SSID) {
         List<WifiConfiguration> existingConfigs = manager.getConfiguredNetworks();
         for (WifiConfiguration existingConfig : existingConfigs) {
@@ -172,6 +178,45 @@ public class WifiSetUtil {
         return manager.isWifiEnabled();
     }
 
+    public static String getWlanMacAddress() {
+        return getConnectWifiInfo().getBSSID();
+    }
+
+    public static String getMacAddress() {
+        byte[] add = new byte[0];
+        try {
+            NetworkInterface nif = NetworkInterface.getByName("wlan0");
+            add = nif.getHardwareAddress();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        if (add == null)
+            return "";
+        else {
+            StringBuilder buf = new StringBuilder();
+            for (byte b : add) {
+                buf.append(String.format("%02X:", b));
+            }
+            if (buf.length() > 0) {
+                buf.deleteCharAt(buf.length() - 1);
+            }
+            return buf.toString();
+        }
+    }
+
+    public static String getIP() {
+        WifiInfo info = getConnectWifiInfo();
+        return intToIp(info.getIpAddress());
+    }
+
+    private static String intToIp(int ipInt) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ipInt & 0xFF).append(".");
+        sb.append((ipInt >> 8) & 0xFF).append(".");
+        sb.append((ipInt >> 16) & 0xFF).append(".");
+        sb.append((ipInt >> 24) & 0xFF);
+        return sb.toString();
+    }
 }
 
 

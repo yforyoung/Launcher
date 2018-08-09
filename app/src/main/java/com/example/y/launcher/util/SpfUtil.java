@@ -1,7 +1,6 @@
 package com.example.y.launcher.util;
 
 import android.content.Context;
-
 import com.example.y.launcher.App;
 
 public class SpfUtil {
