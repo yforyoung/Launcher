@@ -20,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+
 import com.example.y.launcher.R;
 import com.example.y.launcher.adapter.WifiAdapter;
 import com.example.y.launcher.base.BaseActivity;
@@ -27,6 +28,7 @@ import com.example.y.launcher.beans.Wifi;
 import com.example.y.launcher.util.SpfUtil;
 import com.example.y.launcher.util.WifiComparator;
 import com.example.y.launcher.util.WifiUtil;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -110,15 +112,19 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
     public void onItemClick(View v, int tag) {
         Wifi wifi = wifiList.get(tag);
         if (wifi.isConnect()) {
-          showCutWifiDialog(wifi);
+            showCutWifiDialog(wifi);
         } else {
             if (wifi.isSave()) {
+                for (Wifi w : wifiList) {
+                    if (w.isConnect())
+                        w.setConnect(false);
+                }
                 showConnectSavedWifiDialog(wifi);
             } else {
-              showConnectWifiDialog(wifi);
+                showConnectWifiDialog(wifi);
             }
         }
-        handler.sendEmptyMessage(0);
+
     }
 
     private void showConnectWifiDialog(final Wifi wifi) {
@@ -142,11 +148,13 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
 
             new AlertDialog.Builder(this)
                     .setView(view)
+                    .setTitle(wifi.getSSID())
                     .setPositiveButton("连接", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             wifi.setPwd(wifiPwd.getText().toString());
-                            SpfUtil.putString(wifi.getSSID(),wifi.getPwd());
+                            SpfUtil.putString(wifi.getSSID(), wifi.getPwd());
+                            handler.sendEmptyMessage(0);
                         }
                     })
                     .setNegativeButton("取消", null)
@@ -159,10 +167,13 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
 
     private void showConnectSavedWifiDialog(final Wifi wifi) {
         new AlertDialog.Builder(this)
+                .setTitle(wifi.getSSID())
                 .setPositiveButton("连接", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         WifiUtil.connectWifiSaved(wifi);
+                        handler.sendEmptyMessage(0);
                     }
                 })
                 .setNegativeButton("取消", null)
@@ -172,10 +183,12 @@ public class NetSettingActivity extends BaseActivity implements CompoundButton.O
 
     private void showCutWifiDialog(final Wifi wifi) {
         new AlertDialog.Builder(this)
+                .setTitle(wifi.getSSID())
                 .setPositiveButton("断开", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         WifiUtil.cutWifiConnection(wifi);
+                        handler.sendEmptyMessage(0);
                     }
                 })
                 .setNegativeButton("取消", null)

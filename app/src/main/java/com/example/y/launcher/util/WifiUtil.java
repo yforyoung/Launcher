@@ -17,12 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 
-/*
- * 对wifi显示进行排序
- * 断开连接
- * 查看wifi信息
- * 保存wifi
- * */
 public class WifiUtil {
     private static WifiManager manager;
     private static WifiInfo info;
@@ -100,6 +94,7 @@ public class WifiUtil {
         //manager.disableNetwork(getConnectWifiInfo().getNetworkId());
         manager.disconnect();
         wifi.setConnect(false);
+        SpfUtil.putString("connect_wifi","");
     }
 
     public static void connectWifiSaved(Wifi wifi) {
