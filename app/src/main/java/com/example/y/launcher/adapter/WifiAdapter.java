@@ -12,7 +12,7 @@ import com.example.y.launcher.beans.Wifi;
 
 import java.util.List;
 
-public class WifiAdapter extends RecyclerView.Adapter<WifiAdapter.ViewHolder> {
+public class WifiAdapter extends RecyclerView.Adapter<WifiAdapter.ViewHolder> implements View.OnFocusChangeListener {
     private List<Wifi> wifiList;
     private OnItemClickListener onItemClickListener;
 
@@ -32,6 +32,7 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiAdapter.ViewHolder> {
                 }
             }
         });
+        view.setOnFocusChangeListener(this);
 
         return new ViewHolder(view);
     }
@@ -93,6 +94,15 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiAdapter.ViewHolder> {
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus){
+            v.setBackgroundResource(R.color.colorWifiFocusBg);
+        }else{
+            v.setBackgroundResource(R.color.colorWifiBg);
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

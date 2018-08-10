@@ -15,6 +15,7 @@ import com.example.y.launcher.R;
 import com.example.y.launcher.activity.AppsActivity;
 import com.example.y.launcher.activity.SettingActivity;
 import com.example.y.launcher.base.BaseFragment;
+import com.example.y.launcher.util.AnimateUtil;
 
 
 public class FirstFragment extends BaseFragment implements View.OnFocusChangeListener, View.OnClickListener {
@@ -47,12 +48,7 @@ public class FirstFragment extends BaseFragment implements View.OnFocusChangeLis
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        if (hasFocus) {
-            ViewCompat.animate(v).scaleX(1.1f).scaleY(1.1f).translationZ(1).start();
-        }else{
-            ViewCompat.animate(v).scaleX(1f).scaleY(1f).translationZ(1).start();
-        }
-
+        AnimateUtil.onFocusAnimation(v,hasFocus);
     }
 
     @Override

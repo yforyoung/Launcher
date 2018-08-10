@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#6c6c6c"
+    android:background="#686868"
     android:orientation="vertical"
     tools:context=".activity.NetSettingActivity">
 
@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="无线网络"
+        android:focusable="true"
         android:textStyle="bold"
         android:layout_margin="20dp"
         android:textColor="#fff"
@@ -20,7 +21,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/wifi_list"
         android:layout_margin="20dp"
-        android:background="#90ffffff"
+        android:descendantFocusability="afterDescendants"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

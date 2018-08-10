@@ -4,6 +4,7 @@
     android:layout_width="164dp"
     android:layout_height="164dp"
     android:layout_margin="10dp"
+    android:focusable="true"
     app:cardCornerRadius="15dp"
     android:backgroundTint="#7e878787"
     >
