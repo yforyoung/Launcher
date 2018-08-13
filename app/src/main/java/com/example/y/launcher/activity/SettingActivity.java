@@ -1,15 +1,10 @@
 package com.example.y.launcher.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
-import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.widget.TextView;
-
 import com.example.y.launcher.R;
 import com.example.y.launcher.base.BaseActivity;
-import com.example.y.launcher.util.AnimateUtil;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener, View.OnFocusChangeListener {
     private TextView netSet;

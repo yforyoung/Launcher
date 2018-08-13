@@ -17,14 +17,12 @@ import com.example.y.launcher.util.ToastUtil;
 public class MainActivity extends BaseActivity {
     private LauncherViewPager viewPager;
     private FragmentManager manager;
-    private TabLayout tabHead;
 
 
     @Override
     public void initView() {
         setContentView(R.layout.activity_main);
         viewPager = findViewById(R.id.view_pager);
-        tabHead = findViewById(R.id.tab_head);
     }
 
     @Override
@@ -34,7 +32,6 @@ public class MainActivity extends BaseActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(manager);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
-        tabHead.setupWithViewPager(viewPager);
     }
 
     @Override

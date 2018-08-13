@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import com.example.y.launcher.adapter.AppsAdapter;
 import com.example.y.launcher.R;
@@ -39,6 +40,7 @@ public class AppsActivity extends BaseActivity {
                 ResolveInfo info=infos.get(position);
                 String pName=info.activityInfo.packageName;
                 String name=info.activityInfo.name;
+                Log.i("info", "onItemClick: "+pName+"   name"+name);
                 ComponentName componentName=new ComponentName(pName,name);
                 Intent intent=new Intent();
                 intent.setComponent(componentName);

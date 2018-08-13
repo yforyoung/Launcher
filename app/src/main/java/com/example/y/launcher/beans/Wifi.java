@@ -1,12 +1,12 @@
 package com.example.y.launcher.beans;
 
 public class Wifi {
-    private boolean save;
+    private boolean save=false;
     private String SSID;
     private String pwd;
     private String capabilities;
     private int level;
-    private boolean connect;
+    private boolean connect=false;
     private int type;
 
     public Wifi() {
