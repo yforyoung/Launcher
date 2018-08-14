@@ -6,16 +6,18 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.util.Log;
+
 import com.example.y.launcher.beans.Wifi;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.content.ContentValues.TAG;
 
 public class WifiUtil {
     private static WifiManager manager;
-    private static WifiInfo info;
     public static final int ESS = 0;
     private static final int PSK = 1;
     private static final int WEP = 2;
@@ -55,12 +57,8 @@ public class WifiUtil {
         wifi.setLevel(WifiManager.calculateSignalLevel(sr.level, 4));
         if (SpfUtil.getString("connect_wifi", "").equals(sr.SSID))
             wifi.setConnect(true);
-        else
-            wifi.setConnect(false);
         if (isExist(sr.SSID))
             wifi.setSave(true);
-        else
-            wifi.setSave(false);
         wifi.setPwd("");
         String c = sr.capabilities;
         wifi.setCapabilities(c.substring(0, c.indexOf("[ESS]")));
@@ -73,26 +71,35 @@ public class WifiUtil {
         return wifi;
     }
 
-    public static void connectWifi(Wifi wifi) {
+    public static boolean connectWifi(Wifi wifi) {
         int netId = manager.addNetwork(createWifiConfig(wifi.getSSID(), wifi.getPwd(), wifi.getType()));
-        if (!manager.enableNetwork(netId, true))
+        if (!manager.enableNetwork(netId, true)) {
             manager.reconnect();
+            return false;
+        }
         else {
             SpfUtil.putString("connect_wifi", wifi.getSSID());
-            wifi.setConnect(true);
+            wifi.setConnect(true);  //移动
             wifi.setSave(true);
+            Log.i(TAG, "connectWifi: connect");
+            return true;
         }
     }
 
     public static void cutWifiConnection(Wifi wifi) {
         manager.disconnect();
-        wifi.setConnect(false);
+        wifi.setConnect(false);//??
         SpfUtil.putString("connect_wifi", "");
     }
 
     public static void connectWifiSaved(Wifi wifi) {
-        wifi.setPwd(SpfUtil.getString(wifi.getSSID(), ""));
+        removeWifi(wifi.getSSID());
         connectWifi(wifi);
+       /* wifi.setPwd(SpfUtil.getString(wifi.getSSID(), ""));
+        manager.enableNetwork(getNetId(wifi.getSSID()),true);
+        wifi.setConnect(true);
+        SpfUtil.putString("connect_wifi", wifi.getSSID());*/
+        //connectWifi(wifi);
     }
 
 
@@ -152,14 +159,24 @@ public class WifiUtil {
     }
 
 
-    private static WifiConfiguration getSavedWifi(String SSID) {
+    private static void removeWifi(String SSID) {
         List<WifiConfiguration> existingConfigs = manager.getConfiguredNetworks();
         for (WifiConfiguration existingConfig : existingConfigs) {
             if (existingConfig.SSID.equals("\"" + SSID + "\"")) {
-                return existingConfig;
+                manager.removeNetwork(existingConfig.networkId);
+                manager.saveConfiguration();
             }
         }
-        return null;
+    }
+
+    private static int getNetId(String SSID){
+        List<WifiConfiguration> existingConfigs = manager.getConfiguredNetworks();
+        for (WifiConfiguration existingConfig : existingConfigs) {
+            if (existingConfig.SSID.equals("\"" + SSID + "\"")) {
+                return existingConfig.networkId;
+            }
+        }
+        return -1;
     }
 
     public static boolean isWifiEnabled() {

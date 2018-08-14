@@ -3,18 +3,17 @@ package com.example.y.launcher.adapter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.y.launcher.R;
 import com.example.y.launcher.util.AnimateUtil;
-
 import java.util.List;
+import static android.content.ContentValues.TAG;
 
 public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder> implements View.OnFocusChangeListener {
 
@@ -58,8 +57,10 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder> im
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.appName.setText(infos.get(position).loadLabel(manager));
-        holder.appIcon.setImageDrawable(infos.get(position).loadIcon(manager));
+        ResolveInfo info=infos.get(position);
+        Log.i(TAG, "onBindViewHolder: "+info.loadLabel(manager)+"    " +info.activityInfo.name+"         "+info.activityInfo.packageName);
+        holder.appName.setText(info.loadLabel(manager));
+        holder.appIcon.setImageDrawable(info.loadIcon(manager));
         holder.itemView.setTag(position);
     }
 

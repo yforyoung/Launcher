@@ -12,6 +12,9 @@ import com.example.y.launcher.base.BaseActivity;
 import com.example.y.launcher.util.InfoUtil;
 import com.example.y.launcher.util.WifiUtil;
 
+import java.util.Objects;
+
+/*关于  未使用*/
 public class AboutActivity extends BaseActivity {
     private TextView ip, mac,wlanMac,softVersion,hardVersion,gateWay,netMask;
 
@@ -32,7 +35,7 @@ public class AboutActivity extends BaseActivity {
     private BroadcastReceiver receiver=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(WifiManager.WIFI_STATE_CHANGED_ACTION)){
+            if (Objects.equals(intent.getAction(), WifiManager.WIFI_STATE_CHANGED_ACTION)){
                 initData();
             }
         }

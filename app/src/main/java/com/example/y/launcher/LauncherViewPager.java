@@ -9,6 +9,8 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
 import java.lang.reflect.Field;
+
+/*未使用*/
 public class LauncherViewPager extends ViewPager {
 
     public LauncherViewPager(Context context) {
