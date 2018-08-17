@@ -11,6 +11,8 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ import java.util.Date;
 
 
 public class MainActivity extends BaseActivity implements View.OnFocusChangeListener, View.OnClickListener {
+    private static final String TAG = "MainActivity";
     private LinearLayout setting, apps, videoMeeting, netSysSet, refreshSys, fileManager;
     private TextView time, date;
     private Handler handler=new Handler(new Handler.Callback() {
@@ -108,6 +111,16 @@ public class MainActivity extends BaseActivity implements View.OnFocusChangeList
             //进行授权
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.i(TAG, "onKeyDown: "+keyCode);
+        if (keyCode==4) {
+            videoMeeting.requestFocus();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
