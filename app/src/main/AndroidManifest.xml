@@ -7,7 +7,12 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 允许程序改变网络链接状态 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 允许程序访问访问WIFI网络状态信息 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <uses-feature android:name="android.hardware.usb.host" />
 
     <application
         android:name=".LauncherApplication"
@@ -30,6 +35,11 @@
         <activity android:name=".activity.AppsActivity" />
         <activity android:name=".activity.NetSettingActivity" />
         <activity android:name=".activity.AboutActivity" />
+
+        <service
+            android:name=".service.RecordService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
